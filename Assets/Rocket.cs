@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Rocket : MonoBehaviour
 {
+    [SerializeField] float mainThrust = 100f;
+    [SerializeField] float rcsThrust = 100f;
+    
     Rigidbody rigidBody;
     AudioSource audioSource;
 
@@ -18,14 +20,27 @@ public class Rocket : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ProcesInput();
+        Thrust();
+        Rotate();
     }
 
-    private void ProcesInput()
+    private void OnCollisionEnter(Collision other) 
+    {
+        switch (other.gameObject.tag)
+        {
+            case "Friendly":
+                break;
+
+            case "Fuel":
+                break;
+        }
+    }
+
+    private void Thrust()
     {
         if (Input.GetKey(KeyCode.Space))
         {
-            rigidBody.AddRelativeForce(Vector3.up);
+            rigidBody.AddRelativeForce(Vector3.up * mainThrust);
 
             if (!audioSource.isPlaying)
             {
@@ -36,14 +51,24 @@ public class Rocket : MonoBehaviour
         {
             audioSource.Stop();
         }
+    }
 
+    private void Rotate()
+    {
+        rigidBody.freezeRotation = true; // take manula control of rotation
+
+        float rotationThisFrame = rcsThrust * Time.deltaTime;
         if (Input.GetKey(KeyCode.A))
         {
-            transform.Rotate(Vector3.forward);
+            transform.Rotate(Vector3.forward * rotationThisFrame);
         }
         else if (Input.GetKey(KeyCode.D))
         {
-            transform.Rotate(-Vector3.forward);
+            transform.Rotate(-Vector3.forward * rotationThisFrame);
         }
+
+        rigidBody.freezeRotation = false;
     }
+
+    
 }

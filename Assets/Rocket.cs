@@ -30,9 +30,10 @@ public class Rocket : MonoBehaviour
         {
             case "Friendly":
                 break;
-
             case "Fuel":
                 break;
+            default:
+                break;      
         }
     }
 
